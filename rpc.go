@@ -2,47 +2,66 @@ package nanoGo
 
 import (
 	"bytes"
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 )
 
 // RPC protocol documentation: https://github.com/clemahieu/raiblocks/wiki/RPC-protocol
 
-var client = &http.Client{}
+// Client : Nano RPC client
+type Client struct {
+	address string
+}
 
-var address string
+var httpClient = &http.Client{}
 
-// Connect : send a sample request to check if the server is responding
-func Connect(address string) (err error) {
-	address = address
+// Connect : creates a new Client
+func Connect(address string) *Client {
+	client := &Client{
+		address: address,
+	}
 
-	_, err = sendRequest("version", nil)
+	return client
+}
+
+// Request : sends a custom request to the RPC server. "object" is the interface for parsing
+func (client *Client) Request(action string, args map[string]string, object interface{}) (err error) {
+	response, err := client.sendRequest(action, args)
+
+	if err != nil {
+		return err
+	}
+
+	err = parseRequest(response, &object)
 
 	return err
 }
 
-func sendRequest(action string, args map[string]string) (response []byte, err error) {
-	jsonBody := "{\"action\": \"" + action + "\""
+func parseRequest(data []byte, object interface{}) (err error) {
+	return json.Unmarshal(data, &object)
+}
 
-	for key, value := range args {
-		jsonBody += ","
+func (client *Client) sendRequest(action string, args map[string]string) (response []byte, err error) {
+	args["action"] = action
 
-		jsonBody += "\"" + key + "\": \"" + value + "\""
-	}
-
-	jsonBody += "}"
-
-	req, err := http.NewRequest("POST", address, bytes.NewBuffer([]byte(jsonBody)))
-
-	resp, err := client.Do(req)
+	jsonBody, err := json.Marshal(args)
 
 	if err != nil {
 		return nil, err
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	req, err := http.NewRequest("POST", client.address, bytes.NewBuffer(jsonBody))
 
-	resp.Body.Close()
+	resp, err := httpClient.Do(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
 
 	return body, err
 }
