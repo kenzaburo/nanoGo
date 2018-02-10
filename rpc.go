@@ -26,7 +26,7 @@ func Connect(address string) *Client {
 }
 
 // Request : sends a custom request to the RPC server. "object" is the interface for parsing
-func (client *Client) Request(action string, args map[string]string, object interface{}) (err error) {
+func (client *Client) Request(action string, args map[string]interface{}, object interface{}) (err error) {
 	response, err := client.sendRequest(action, args)
 
 	if err != nil {
@@ -42,7 +42,7 @@ func parseRequest(data []byte, object interface{}) (err error) {
 	return json.Unmarshal(data, &object)
 }
 
-func (client *Client) sendRequest(action string, args map[string]string) (response []byte, err error) {
+func (client *Client) sendRequest(action string, args map[string]interface{}) (response []byte, err error) {
 	args["action"] = action
 
 	jsonBody, err := json.Marshal(args)

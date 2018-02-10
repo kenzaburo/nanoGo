@@ -11,7 +11,7 @@ func TestRequest(t *testing.T) {
 
 	var object map[string]string
 
-	err := client.Request("account_balance", map[string]string{"account": testAccount}, &object)
+	err := client.Request("account_balance", map[string]interface{}{"account": testAccount}, &object)
 
 	if err != nil {
 		t.Log(err)
@@ -27,4 +27,5 @@ func TestRequest(t *testing.T) {
 
 		t.Fatal("Requests don't get parsed correctly")
 	}
+
 }
