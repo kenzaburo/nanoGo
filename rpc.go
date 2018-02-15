@@ -7,6 +7,8 @@ import (
 	"net/http"
 )
 
+// TODO: proper error handling
+
 // RPC protocol documentation: https://github.com/clemahieu/raiblocks/wiki/RPC-protocol
 
 // Client : Nano RPC client

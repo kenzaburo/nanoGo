@@ -4,6 +4,7 @@ import (
 	"github.com/michael1011/nanoGo"
 	"strconv"
 	"testing"
+	"time"
 )
 
 func TestRequest(t *testing.T) {
@@ -19,6 +20,8 @@ func TestRequest(t *testing.T) {
 		t.Fatal("Failed to send request to RPC server")
 	}
 
+	time.Sleep(wait)
+
 	balance, _ := strconv.ParseFloat(object["balance"], 64)
 
 	if balance != testAccountInfo.Balance {
@@ -28,4 +31,5 @@ func TestRequest(t *testing.T) {
 		t.Fatal("Requests don't get parsed correctly")
 	}
 
+	time.Sleep(wait)
 }

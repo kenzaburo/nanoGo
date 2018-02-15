@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"github.com/michael1011/nanoGo"
 	"testing"
+	"time"
 )
+
+// Time between two request to the RPC server
+const wait = time.Millisecond * 25
 
 // A Nano node must be running local on the default port the execute this tests
 const testServer = "http://[::1]:7076"
@@ -68,6 +72,7 @@ func TestAccountBalance(t *testing.T) {
 		failTest(t, testAccountBalance, balance, err, "Getting balance of an account fails")
 	}
 
+	time.Sleep(wait)
 }
 
 func TestAccountBlockCount(t *testing.T) {
@@ -77,6 +82,17 @@ func TestAccountBlockCount(t *testing.T) {
 		failTest(t, testAccountInfo.BlockCount, blockCount, err, "Getting block count of an account fails")
 	}
 
+	time.Sleep(wait)
+}
+
+func TestAccountGet(t *testing.T) {
+	account, err := client.AccountGet(testAccountKey)
+
+	if account != testAccount || err != nil {
+		failTest(t, testAccount, account, err, "Getting the account of an public key fails")
+	}
+
+	time.Sleep(wait)
 }
 
 func TestAccountHistory(t *testing.T) {
@@ -92,6 +108,8 @@ func TestAccountHistory(t *testing.T) {
 		failTest(t, testAccountHistory, history, err, "Returned history is not correct")
 	}
 
+	time.Sleep(wait)
+
 	size = 10
 
 	history, err = client.AccountHistory(testAccount, size)
@@ -100,6 +118,7 @@ func TestAccountHistory(t *testing.T) {
 		failTest(t, size, len(history), err, "Incorrect number of history results are returned")
 	}
 
+	time.Sleep(wait)
 }
 
 func TestAccountInfo(t *testing.T) {
@@ -109,6 +128,7 @@ func TestAccountInfo(t *testing.T) {
 		failTest(t, testAccountInfo, accountInfo, err, "Getting account info fails")
 	}
 
+	time.Sleep(wait)
 }
 
 func TestAccountKey(t *testing.T) {
@@ -118,6 +138,7 @@ func TestAccountKey(t *testing.T) {
 		failTest(t, testAccountKey, key, err, "Getting the public key of an account fails")
 	}
 
+	time.Sleep(wait)
 }
 
 func TestAccountRepresentative(t *testing.T) {
@@ -127,6 +148,7 @@ func TestAccountRepresentative(t *testing.T) {
 		failTest(t, testAccountInfo.Representative, representative, err, "Getting representative of an account fails")
 	}
 
+	time.Sleep(wait)
 }
 
 func TestAccountWeight(t *testing.T) {
@@ -136,6 +158,7 @@ func TestAccountWeight(t *testing.T) {
 		failTest(t, testAccountInfo.Weight, weight, err, "Getting weight of an account fails")
 	}
 
+	time.Sleep(wait)
 }
 
 func TestAccountsBalances(t *testing.T) {
@@ -147,6 +170,7 @@ func TestAccountsBalances(t *testing.T) {
 		failTest(t, testAccountsBalances, balances, err, "Getting balances of multiple accounts fails")
 	}
 
+	time.Sleep(wait)
 }
 
 func TestAccountsFrontiers(t *testing.T) {
@@ -157,7 +181,8 @@ func TestAccountsFrontiers(t *testing.T) {
 
 		failTest(t, testAccountsFrontiers, frontiers, err, "Getting frontiers of multiple accounts fails")
 	}
-	
+
+	time.Sleep(wait)
 }
 
 func TestAccountsPending(t *testing.T) {
@@ -170,6 +195,8 @@ func TestAccountsPending(t *testing.T) {
 		failTest(t, "One pending block", pending, err, "Getting pending blocks without threshold and source fails")
 	}
 
+	time.Sleep(wait)
+
 	// Getting pending blocks of an account without pending blocks
 	pending, err = client.AccountsPending(0, false, 1, testAccount2)
 
@@ -180,6 +207,8 @@ func TestAccountsPending(t *testing.T) {
 			"Getting pending blocks when there are none returns wrong error")
 	}
 
+	time.Sleep(wait)
+
 	// Getting pending blocks with threshold where the threshold is lower than the amount of the pending block
 	pending, err = client.AccountsPending(1, false, 1, testAccount)
 
@@ -187,6 +216,8 @@ func TestAccountsPending(t *testing.T) {
 		failTest(t, "One pending block", pending, err,
 			"Getting pending blocks with threshold returns nothing although there should be one pending block")
 	}
+
+	time.Sleep(wait)
 
 	// Getting pending blocks with threshold where the threshold is larger than the amount of the pending block
 	pending, err = client.AccountsPending(testAccountInfo.Pending+1e+10, false, 1, testAccount)
@@ -198,6 +229,8 @@ func TestAccountsPending(t *testing.T) {
 			"Getting pending blocks with a threshold returns blocks under the threshold")
 	}
 
+	time.Sleep(wait)
+
 	// Getting pending blocks with source
 	pending, err = client.AccountsPending(0, true, 1, testAccount)
 
@@ -205,6 +238,8 @@ func TestAccountsPending(t *testing.T) {
 		failTest(t, testAccountPendingBlock, pending[testAccount][testAccountPendingBlockHash],
 			err, "Getting pending blocks with source fails")
 	}
+
+	time.Sleep(wait)
 
 	// Getting pending blocks with source of an account without pending blocks
 	pending, err = client.AccountsPending(0, true, 1, testAccount2)
@@ -216,6 +251,7 @@ func TestAccountsPending(t *testing.T) {
 			"Getting pending blocks with source when there are none returns wrong error")
 	}
 
+	time.Sleep(wait)
 }
 
 func TestValidateAccountNumber(t *testing.T) {
@@ -226,6 +262,8 @@ func TestValidateAccountNumber(t *testing.T) {
 		failTest(t, true, valid, err, "Valid accounts seem to be invalid")
 	}
 
+	time.Sleep(wait)
+
 	// Invalid account
 	valid, err = client.ValidateAccountNumber("xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpi00000000")
 
@@ -233,6 +271,7 @@ func TestValidateAccountNumber(t *testing.T) {
 		failTest(t, false, valid, err, "Invalid accounts seem to be valid")
 	}
 
+	time.Sleep(wait)
 }
 
 func failTest(t *testing.T, expected interface{}, received interface{}, err error, messages string) {

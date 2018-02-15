@@ -58,18 +58,23 @@ func (client *Client) AccountBlockCount(account string) (blockCount float64, err
 	return response.BlockCount, err
 }
 
-type historyResponse struct {
-	History []History
+// AccountGet : gets the account of a public key
+func (client *Client) AccountGet(key string) (account string, err error) {
+	var response map[string]string
+
+	err = client.Request("account_get", map[string]interface{}{"key": key}, &response)
+
+	return response["account"], err
 }
 
 // AccountHistory : gets the history of an account. Returns an array of the struct "History"
 func (client *Client) AccountHistory(account string, count int) (history []History, err error) {
-	var response historyResponse
+	var response map[string][]History
 
 	err = client.Request("account_history", map[string]interface{}{"account": account, "count": strconv.Itoa(count)}, &response)
 
 	if err == nil {
-		history = response.History
+		history = response["history"]
 	}
 
 	return history, err
@@ -135,7 +140,7 @@ func (client *Client) AccountsFrontiers(accounts ...string) (frontiers map[strin
 	return response["frontiers"], err
 }
 
-// AccountsPending : gets pending blocks of multiple accounts. "count" specifies the number of retrieved blocks. "threshold" is the minimum pending amount of an block and works only on node versions above 8.0 (set 0 to disable). "source" adds the source accounts of the blocks to the response and works only on node versions above 8.1 (set false to disable)
+// AccountsPending : gets pending blocks of multiple accounts. "count" specifies the number of retrieved blocks. "threshold" is the minimum pending amount of an block and works only on node versions above or equal to 8.0 (set 0 to disable). "source" adds the source accounts of the blocks to the response and works only on node versions above or equal to 8.1 (set false to disable)
 func (client *Client) AccountsPending(threshold float64, source bool, count float64, accounts ...string) (pending map[string]map[string]PendingBlock, err error) {
 	errorMessage := "No pending blocks were found for accounts: "
 
