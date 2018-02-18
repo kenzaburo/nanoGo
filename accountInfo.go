@@ -26,7 +26,7 @@ type Balance struct {
 	Pending float64 `json:",string"`
 }
 
-// History : entry of the thransaction of an account
+// History : entry of the transaction history of an account
 type History struct {
 	Hash    string
 	Type    string
