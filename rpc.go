@@ -3,11 +3,10 @@ package nanoGo
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 )
-
-// TODO: proper error handling
 
 // RPC protocol documentation: https://github.com/clemahieu/raiblocks/wiki/RPC-protocol
 
@@ -36,6 +35,32 @@ func (client *Client) Request(action string, args map[string]interface{}, object
 	}
 
 	err = parseRequest(response, &object)
+
+	if err == nil {
+		// .(type) only allowed in switch cases
+		switch object.(type) {
+		case *map[string]interface{}:
+
+			// Assert the type of object is map[string]interface{}
+			err = parseError(*object.(*map[string]interface{}))
+
+		default:
+			var data map[string]interface{}
+
+			parseRequest(response, &data)
+
+			err = parseError(data)
+		}
+
+	}
+
+	return err
+}
+
+func parseError(data map[string]interface{}) (err error) {
+	if data["error"] != nil {
+		err = errors.New(data["error"].(string))
+	}
 
 	return err
 }

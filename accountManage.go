@@ -22,8 +22,6 @@ func (client *Client) AccountList(wallet string) (accounts []string, err error) 
 	return response["accounts"], err
 }
 
-// TODO: test moving account
-
 // AccountMove : moves the given accounts from the "source" to the "target" wallet. "enable_control" has to be enabled in the config of the node
 func (client *Client) AccountMove(target string, source string, accounts ...string) (success bool, err error) {
 	var response map[string]string

@@ -1,6 +1,7 @@
 package nanoGo_test
 
 import (
+	"fmt"
 	"testing"
 	"time"
 )
@@ -37,11 +38,20 @@ func TestAccountList(t *testing.T) {
 	time.Sleep(wait)
 }
 
+// TODO: test moving account when creating new wallet is implemented
 func TestAccountMove(t *testing.T) {
 	moved, err := client.AccountMove(wallet, wallet, testAccount2)
 
 	if moved || !accountExists(testAccount2) || err != nil {
 		failTest(t, true, moved, err, "Moving accounts to the same wallet as moved from does not fail")
+	}
+
+	time.Sleep(wait)
+
+	moved, err = client.AccountMove("asdf", "asdf", testAccount2)
+
+	if moved || fmt.Sprint(err) != "Bad wallet number" {
+		failTest(t, true, moved, err, "Moving accounts does not show an error")
 	}
 
 	time.Sleep(wait)
