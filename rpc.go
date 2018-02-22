@@ -10,14 +10,14 @@ import (
 
 // RPC protocol documentation: https://github.com/clemahieu/raiblocks/wiki/RPC-protocol
 
-// Client : Nano RPC client
+// Client is the Nano RPC client
 type Client struct {
 	address string
 }
 
 var httpClient = &http.Client{}
 
-// Connect : creates a new Client
+// Connect creates a new Client
 func Connect(address string) *Client {
 	client := &Client{
 		address: address,
@@ -26,7 +26,7 @@ func Connect(address string) *Client {
 	return client
 }
 
-// Request : sends a custom request to the RPC server. "object" is the interface for parsing
+// Request sends a request to the RPC server. "object" is the interface for parsing
 func (client *Client) Request(action string, args map[string]interface{}, object interface{}) (err error) {
 	response, err := client.sendRequest(action, args)
 

@@ -4,7 +4,7 @@ import (
 	"strconv"
 )
 
-// AccountCreate : creates a new account in the given wallet. "work" toggles work generation after creating account and works on node version 8.1 onwards. "enable_control" has to be enabled in the config of the node
+// AccountCreate creates a new account in the given wallet. "work" toggles work generation after creating account and works on node version 8.1 onwards. "enable_control" has to be enabled in the config of the node
 func (client *Client) AccountCreate(wallet string, work bool) (account string, err error) {
 	var response map[string]string
 
@@ -13,7 +13,7 @@ func (client *Client) AccountCreate(wallet string, work bool) (account string, e
 	return response["account"], err
 }
 
-// AccountList : gets all accounts inside a wallet
+// AccountList gets all accounts inside of a wallet
 func (client *Client) AccountList(wallet string) (accounts []string, err error) {
 	var response map[string][]string
 
@@ -22,7 +22,7 @@ func (client *Client) AccountList(wallet string) (accounts []string, err error) 
 	return response["accounts"], err
 }
 
-// AccountMove : moves the given accounts from the "source" to the "target" wallet. "enable_control" has to be enabled in the config of the node
+// AccountMove moves the given accounts from the "source" to the "target" wallet. "enable_control" has to be enabled in the config of the node
 func (client *Client) AccountMove(target string, source string, accounts ...string) (success bool, err error) {
 	var response map[string]string
 
@@ -36,7 +36,7 @@ func (client *Client) AccountMove(target string, source string, accounts ...stri
 	return success, err
 }
 
-// AccountRemove : removes an account from the given wallet
+// AccountRemove removes an account from the given wallet
 func (client *Client) AccountRemove(wallet string, account string) (success bool, err error) {
 	var response map[string]string
 
@@ -49,7 +49,7 @@ func (client *Client) AccountRemove(wallet string, account string) (success bool
 	return success, err
 }
 
-// AccountRepresentativeSet : sets the representative of an account. "work" and the value for a block from an external source and works with node version 8.1 or newer (set "" to disable). "enable_control" has to be enabled in the config of the node
+// AccountRepresentativeSet sets the representative of an account. "work" is the value for a block from an external source and works with node version 8.1 or newer (set "" to disable). "enable_control" has to be enabled in the config of the node
 func (client *Client) AccountRepresentativeSet(wallet string, account string, representative string, work string) (block string, err error) {
 	var response map[string]string
 
@@ -64,7 +64,7 @@ func (client *Client) AccountRepresentativeSet(wallet string, account string, re
 	return response["block"], err
 }
 
-// AccountsCreate : creates multiple new accounts in the given wallet. Works on node version 8.1 onwards. "work" toggles work generation after creating accounts. "enable_control" has to be enabled in the config of the node
+// AccountsCreate creates <count> new accounts in the given wallet. Works on node version 8.1 onwards. "work" toggles work generation after creating accounts. "enable_control" has to be enabled in the config of the node
 func (client *Client) AccountsCreate(wallet string, count int, work bool) (accounts []string, err error) {
 	var response map[string][]string
 

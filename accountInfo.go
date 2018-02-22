@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// AccountInfo : information about requested account
+// AccountInfo contains information about requested account
 type AccountInfo struct {
 	Frontier            string
 	OpenBlock           string  `json:"open_block"`
@@ -20,13 +20,13 @@ type AccountInfo struct {
 	Pending             float64 `json:",string"`
 }
 
-// Balance : balance an pending Nano of an account
+// Balance is the balance an pending Nano of an account
 type Balance struct {
 	Balance float64 `json:",string"`
 	Pending float64 `json:",string"`
 }
 
-// History : entry of the transaction history of an account
+// History is an entry of the transaction history of an account
 type History struct {
 	Hash    string
 	Type    string
@@ -34,13 +34,13 @@ type History struct {
 	Amount  float64 `json:",string"`
 }
 
-// PendingBlock : amount and source account of an pending blockCount
+// PendingBlock contains the amount and source account of an pending block
 type PendingBlock struct {
 	Amount float64 `json:",string"`
 	Source string
 }
 
-// AccountBalance : gets the balance of an account
+// AccountBalance gets the balance of an account
 func (client *Client) AccountBalance(account string) (balance Balance, err error) {
 	var response Balance
 
@@ -49,7 +49,7 @@ func (client *Client) AccountBalance(account string) (balance Balance, err error
 	return response, err
 }
 
-// AccountBlockCount : gets the block count of an account
+// AccountBlockCount gets the block count of an account
 func (client *Client) AccountBlockCount(account string) (blockCount float64, err error) {
 	var response AccountInfo
 
@@ -58,7 +58,7 @@ func (client *Client) AccountBlockCount(account string) (blockCount float64, err
 	return response.BlockCount, err
 }
 
-// AccountGet : gets the account of a public key
+// AccountGet gets the account of a public key
 func (client *Client) AccountGet(key string) (account string, err error) {
 	var response map[string]string
 
@@ -67,7 +67,7 @@ func (client *Client) AccountGet(key string) (account string, err error) {
 	return response["account"], err
 }
 
-// AccountHistory : gets the history of an account. Returns an array of the struct "History"
+// AccountHistory gets the transaction history of an account
 func (client *Client) AccountHistory(account string, count int) (history []History, err error) {
 	var response map[string][]History
 
@@ -80,7 +80,7 @@ func (client *Client) AccountHistory(account string, count int) (history []Histo
 	return history, err
 }
 
-// AccountInfo : gets frontier, open block, change representative block, balance, last modified timestamp and block count of an account. Set legacy true if your node is older than version 8.1 or you don't need the representative, weight and the pending balance of the account
+// AccountInfo gets frontier, open block, change representative block, balance, last modified timestamp and block count of an account. Set legacy true if your node is older than version 8.1 or you don't need the representative, weight and the pending balance of the account
 func (client *Client) AccountInfo(account string, legacy bool) (response AccountInfo, err error) {
 	args := map[string]interface{}{"account": account}
 
@@ -95,7 +95,7 @@ func (client *Client) AccountInfo(account string, legacy bool) (response Account
 	return response, err
 }
 
-// AccountKey : gets the public key of an account
+// AccountKey gets the public key of an account
 func (client *Client) AccountKey(account string) (key string, err error) {
 	var response map[string]string
 
@@ -104,7 +104,7 @@ func (client *Client) AccountKey(account string) (key string, err error) {
 	return response["key"], err
 }
 
-// AccountRepresentative : gets the representative of an account
+// AccountRepresentative gets the representative of an account
 func (client *Client) AccountRepresentative(account string) (representative string, err error) {
 	var response AccountInfo
 
@@ -113,7 +113,7 @@ func (client *Client) AccountRepresentative(account string) (representative stri
 	return response.Representative, err
 }
 
-// AccountWeight : gets the weight of an account
+// AccountWeight gets the weight of an account
 func (client *Client) AccountWeight(account string) (weight float64, err error) {
 	var response AccountInfo
 
@@ -122,7 +122,7 @@ func (client *Client) AccountWeight(account string) (weight float64, err error) 
 	return response.Weight, err
 }
 
-// AccountsBalances : gets the balances of multiple accounts
+// AccountsBalances gets the balances of multiple accounts
 func (client *Client) AccountsBalances(accounts ...string) (balances map[string]Balance, err error) {
 	var response map[string]map[string]Balance
 
@@ -131,7 +131,7 @@ func (client *Client) AccountsBalances(accounts ...string) (balances map[string]
 	return response["balances"], err
 }
 
-// AccountsFrontiers : gets frontiers of multiple accounts
+// AccountsFrontiers gets the frontiers of multiple accounts
 func (client *Client) AccountsFrontiers(accounts ...string) (frontiers map[string]string, err error) {
 	var response map[string]map[string]string
 
@@ -140,7 +140,7 @@ func (client *Client) AccountsFrontiers(accounts ...string) (frontiers map[strin
 	return response["frontiers"], err
 }
 
-// AccountsPending : gets pending blocks of multiple accounts. "count" specifies the number of retrieved blocks. "threshold" is the minimum pending amount of an block and works only on node versions above or equal to 8.0 (set 0 to disable). "source" adds the source accounts of the blocks to the response and works only on node versions above or equal to 8.1 (set false to disable)
+// AccountsPending gets pending blocks of multiple accounts. "count" specifies the number of blocks to retrieve. "threshold" is the minimum pending amount of an block and works only on node versions above or equal to 8.0 (set 0 to disable). "source" adds the source accounts of the blocks to the response and works only on node versions above or equal to 8.1 (set false to disable)
 func (client *Client) AccountsPending(threshold float64, source bool, count float64, accounts ...string) (pending map[string]map[string]PendingBlock, err error) {
 	errorMessage := "No pending blocks were found for accounts: "
 
@@ -217,6 +217,7 @@ func (client *Client) AccountsPending(threshold float64, source bool, count floa
 			pending = response["blocks"]
 
 			for account, blocks := range pending {
+
 				// No pending blocks
 				if len(blocks) == 0 {
 					errorMessage += account + ", "
@@ -237,7 +238,7 @@ func (client *Client) AccountsPending(threshold float64, source bool, count floa
 	return pending, err
 }
 
-// ValidateAccountNumber : checks wether an account is existing or not
+// ValidateAccountNumber checks wether an account is existing or not
 func (client *Client) ValidateAccountNumber(account string) (valid bool, err error) {
 	var response map[string]string
 
